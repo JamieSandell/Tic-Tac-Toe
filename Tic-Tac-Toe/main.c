@@ -11,7 +11,7 @@ static void uninitialise_game(void);
 int main(int argc, char *argv[]) {
 	initialise_game();
 	render_board(game_board);
-
+	uninitialise_game();
 	return EXIT_SUCCESS;
 }
 
