@@ -15,20 +15,12 @@ void render_board(const Board* const board)
 
 	for (int r = 0; r < 3; ++r)
 	{
-		printf("%d | ", r);
+		printf(" %d | ", r);
 
 		for (int c = 0; c < 3; ++c)
 		{
 			render_board_cell(board_get_cell(board, r, c));
-
-			if (c < 2)
-			{
-				printf(" | ");
-			}
-			else
-			{
-				printf(" |");
-			}
+			printf(c < 2 ? " | " : " |");
 		}
 
 		putchar('\n');
