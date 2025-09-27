@@ -10,35 +10,33 @@ void render_board(const Board* const board)
 		return;
 	}
 
-	//printf(" %c | %c | %c \n", board_get_cell(board, 0, 0), board_get_cell(board, 0, 1), board_get_cell(board, 0, 2));
-	//printf("---+---+---\n");
-	//printf(" %c | %c | %c \n", board_get_cell(board, 1, 0), board_get_cell(board, 1, 1), board_get_cell(board, 1, 2));
-	//printf("---+---+---\n");
-	//printf(" %c | %c | %c \n", board_get_cell(board, 2, 0), board_get_cell(board, 2, 1), board_get_cell(board, 2, 2));
+	puts("     0   1   2");
+	puts("   -------------");
 
-	for (int row = 0; row < 3; ++row)
+	for (int r = 0; r < 3; ++r)
 	{
-		for (int col = 0; col < 3; ++col)
-		{
-			putchar(' ');
-			render_board_cell(board_get_cell(board, row, col));
-			putchar(' ');
+		printf("%d | ", r);
 
-			if (col < 2)
+		for (int c = 0; c < 3; ++c)
+		{
+			render_board_cell(board_get_cell(board, r, c));
+
+			if (c < 2)
 			{
-				putchar('|');
+				printf(" | ");
+			}
+			else
+			{
+				printf(" |");
 			}
 		}
-		putchar('\n');
 
-		if (row < 2)
-		{
-			printf("---+---+---\n");
-		}
+		putchar('\n');
+		puts("   -------------");
 	}
 }
 
-void render_board_cell(enum BoardCell board_cell)
+void render_board_cell(enum BoardCellState board_cell)
 {
 	switch (board_cell)
 	{

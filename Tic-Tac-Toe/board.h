@@ -2,7 +2,7 @@
 
 typedef struct Board Board;
 
-enum BoardCell {
+enum BoardCellState {
 	BOARD_CELL_EMPTY,
 	BOARD_CELL_X,
 	BOARD_CELL_O,
@@ -11,5 +11,5 @@ enum BoardCell {
 
 Board *board_create(void);
 void board_destroy(Board* board);
-enum BoardCell board_get_cell(const Board* const board, const int row, const int col);
-void board_set_cell(Board* board, int row, int col, char ch);
+enum BoardCellState board_get_cell(const Board* const board, const int row, const int col);
+void board_set_cell(Board* board, int row, int col, enum BoardCellState state);

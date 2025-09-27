@@ -4,4 +4,4 @@
 
 void render_board(const Board* const board);
 
-void render_board_cell(enum BoardCell board_cell);
+void render_board_cell(enum BoardCellState board_cell);

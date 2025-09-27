@@ -2,7 +2,7 @@
 #include "board.h"
 
 struct Board {
-	enum BoardCell cells[3][3];
+	enum BoardCellState cells[3][3];
 };
 
 Board *board_create(void) {
@@ -25,7 +25,7 @@ void board_destroy(Board* board) {
 	free(board);
 }
 
-enum BoardCell board_get_cell(const Board* const board, const int row, const int col) {
+enum BoardCellState board_get_cell(const Board* const board, const int row, const int col) {
 	if (!board || row < 0 || row >= 3 || col < 0 || col >= 3)
 	{
 		return BOARD_CELL_INVALID;
@@ -34,11 +34,11 @@ enum BoardCell board_get_cell(const Board* const board, const int row, const int
 	return board->cells[row][col];
 }
 
-void board_set_cell(Board* board, int row, int col, char ch) {
+void board_set_cell(Board* board, int row, int col, enum BoardCellState state) {
 	if (!board || row < 0 || row >= 3 || col < 0 || col >= 3)
 	{
 		return;
 	}
 
-	board->cells[row][col] = ch;
+	board->cells[row][col] = state;
 }
