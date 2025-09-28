@@ -28,6 +28,11 @@ void render_board(const Board* const board)
 	}
 }
 
+void render_clear_screen(void)
+{
+	puts("\033[H\033[J");
+}
+
 static char render_board_cell(enum BoardCellState board_cell)
 {
 	char ch;
@@ -57,4 +62,9 @@ static char render_board_cell(enum BoardCellState board_cell)
 	}
 
 	return ch;
+}
+
+void render_player_input_prompt(bool is_player_x)
+{
+	printf("Player %c, enter your move (row and column): ", is_player_x ? 'X' : 'O');
 }

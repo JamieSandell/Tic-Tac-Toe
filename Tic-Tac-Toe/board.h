@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stdbool.h"
+
 typedef struct Board Board;
 
 enum BoardCellState {
@@ -12,4 +14,5 @@ enum BoardCellState {
 Board *board_create(void);
 void board_destroy(Board* board);
 enum BoardCellState board_get_cell(const Board* const board, const int row, const int col);
-void board_set_cell(Board* board, int row, int col, enum BoardCellState state);
+// Processes a player's move. Returns true if the move was successful, false otherwise.
+bool board_process_player_move(Board* const board, int row, int col, bool is_player_x);
