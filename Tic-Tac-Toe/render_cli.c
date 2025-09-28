@@ -19,7 +19,7 @@ void render_board(const Board* const board)
 
 		for (int c = 0; c < 3; ++c)
 		{
-			render_board_cell(board_get_cell(board, r, c));
+			putchar(render_board_cell(board_get_cell(board, r, c)));
 			printf(c < 2 ? " | " : " |");
 		}
 
@@ -30,27 +30,31 @@ void render_board(const Board* const board)
 
 static char render_board_cell(enum BoardCellState board_cell)
 {
+	char ch;
+
 	switch (board_cell)
 	{
 		case BOARD_CELL_EMPTY:
 		{
-			putchar('.');
+			ch = '.';
 			break;
 		}
 		case BOARD_CELL_X:
 		{
-			putchar('X');
+			ch = 'X';
 			break;
 		}
 		case BOARD_CELL_O:
 		{
-			putchar('O');
+			ch = 'O';
 			break;
 		}
 		default:
 		{
-			putchar('?');
+			ch = '?';
 			break;
 		}
 	}
+
+	return ch;
 }
