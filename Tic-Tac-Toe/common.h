@@ -1,0 +1,9 @@
+#pragma once
+
+enum StatusType
+{
+	STATUS_TYPE_NONE,
+	STATUS_TYPE_INFO,
+	STATUS_TYPE_WARNING,
+	STATUS_TYPE_ERROR
+};

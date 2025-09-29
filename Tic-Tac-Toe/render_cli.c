@@ -66,7 +66,7 @@ void render_clear_screen(void)
 	puts("\033[H\033[J");
 }
 
-void render_status_message(const char* const message)
+void render_status_message(enum Status_Type type, const char* const message)
 {
 	if (message)
 	{
