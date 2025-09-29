@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS // doing the safe pattern (fgets -> parse), so sscanf here is perfectly reasonable.
+#endif
+
 #include <stdio.h>
 
 #include "input.h"

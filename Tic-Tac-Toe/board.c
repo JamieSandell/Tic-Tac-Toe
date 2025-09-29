@@ -38,20 +38,31 @@ enum BoardCellState board_get_cell(const Board* const board, const int row, cons
 	return board->cells[row][col];
 }
 
-bool board_process_player_move(Board* const board, int row, int col, bool is_player_x)
+enum BoardMoveResult board_process_player_move(Board* const board, int row, int col, enum BoardPlayer player)
 {
+	if (!board)
+	{
+		return BOARD_MOVE_RESULT_INVALID_BOARD;
+	}
+
 	switch (board_get_cell(board, row, col))
 	{
 		case BOARD_CELL_X:
 		case BOARD_CELL_O:
-			return false;
+		{
+			return BOARD_MOVE_RESULT_CELL_OCCUPIED;
+		}
 		case BOARD_CELL_EMPTY:
+		{
 			break;
+		}
 		case BOARD_CELL_INVALID:
 		default:
-			return false;
+		{
+			return BOARD_MOVE_RESULT_OUT_OF_BOUNDS;
+		}
 	}
 
-	board->cells[row][col] = is_player_x ? BOARD_CELL_X : BOARD_CELL_O;
-	return true;
+	board->cells[row][col] = player == BOARD_PLAYER_X ? BOARD_CELL_X : BOARD_CELL_O;
+	return BOARD_MOVE_RESULT_OK;
 }

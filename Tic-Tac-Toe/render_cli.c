@@ -3,6 +3,39 @@
 #include "board.h"
 #include "render_cli.h"
 
+static char render_board_cell(enum BoardCellState board_cell);
+
+static char render_board_cell(enum BoardCellState board_cell)
+{
+	char ch;
+
+	switch (board_cell)
+	{
+	case BOARD_CELL_EMPTY:
+	{
+		ch = '.';
+		break;
+	}
+	case BOARD_CELL_X:
+	{
+		ch = 'X';
+		break;
+	}
+	case BOARD_CELL_O:
+	{
+		ch = 'O';
+		break;
+	}
+	default:
+	{
+		ch = '?';
+		break;
+	}
+	}
+
+	return ch;
+}
+
 void render_board(const Board* const board)
 {
 	if (!board)
@@ -33,38 +66,19 @@ void render_clear_screen(void)
 	puts("\033[H\033[J");
 }
 
-static char render_board_cell(enum BoardCellState board_cell)
+void render_status_message(const char* const message)
 {
-	char ch;
-
-	switch (board_cell)
+	if (message)
 	{
-		case BOARD_CELL_EMPTY:
-		{
-			ch = '.';
-			break;
-		}
-		case BOARD_CELL_X:
-		{
-			ch = 'X';
-			break;
-		}
-		case BOARD_CELL_O:
-		{
-			ch = 'O';
-			break;
-		}
-		default:
-		{
-			ch = '?';
-			break;
-		}
+		printf("Invalid input: %s\n", message);
 	}
-
-	return ch;
+	else
+	{
+		puts("Invalid input.");
+	}
 }
 
 void render_player_input_prompt(bool is_player_x)
 {
-	printf("Player %c, enter your move (row and column): ", is_player_x ? 'X' : 'O');
+	printf("Player %c, enter your move (row and column between 0 an 2): ", is_player_x ? 'X' : 'O');
 }
