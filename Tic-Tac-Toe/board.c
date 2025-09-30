@@ -6,6 +6,51 @@ struct Board
 	enum BoardCellState cells[3][3];
 };
 
+enum BoardWinState board_check_win_state(const Board* const board, enum BoardPlayer last_player)
+{
+	if (!board)
+	{
+		return BOARD_WIN_STATE_INVALID_BOARD;
+	}
+
+	enum BoardCellState player_cell = last_player == BOARD_PLAYER_X ? BOARD_CELL_X : BOARD_CELL_O;
+	// Check rows and columns
+	for (int i = 0; i < 3; i++)
+	{
+		if ((board->cells[i][0] == player_cell && board->cells[i][1] == player_cell && board->cells[i][2] == player_cell) ||
+			(board->cells[0][i] == player_cell && board->cells[1][i] == player_cell && board->cells[2][i] == player_cell))
+		{
+			return last_player == BOARD_PLAYER_X ? BOARD_WIN_STATE_X : BOARD_WIN_STATE_O;
+		}
+	}
+	// Check diagonals
+	if ((board->cells[0][0] == player_cell && board->cells[1][1] == player_cell && board->cells[2][2] == player_cell) ||
+		(board->cells[0][2] == player_cell && board->cells[1][1] == player_cell && board->cells[2][0] == player_cell))
+	{
+		return last_player == BOARD_PLAYER_X ? BOARD_WIN_STATE_X : BOARD_WIN_STATE_O;
+	}
+	// Check for draw or ongoing game
+	bool is_draw = true;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			if (board->cells[i][j] == BOARD_CELL_EMPTY)
+			{
+				is_draw = false;
+				break;
+			}
+		}
+		if (!is_draw)
+		{
+			break;
+		}
+	}
+
+	return is_draw ? BOARD_WIN_STATE_DRAW : BOARD_WIN_STATE_NONE;
+}
+
 Board *board_create(void)
 {
 	Board *board = (Board *)malloc(sizeof(Board));

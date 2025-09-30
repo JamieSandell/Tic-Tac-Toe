@@ -21,6 +21,7 @@ typedef struct GameState
 
 static GameState game_state = { 0 };
 
+static void end_game_with_message(enum StatusType type, const char* const message);
 static void initialise_game(void);
 static void uninitialise_game(void);
 
@@ -38,6 +39,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		render_player_input_prompt(game_state.is_player_x_turn);
+		fflush(stdout);
 
 		Input input;
 		enum InputResult input_result = get_player_input(&input);
@@ -46,15 +48,53 @@ int main(int argc, char *argv[]) {
 		{
 			case INPUT_RESULT_OK:
 			{
-				game_state.last_move_result = board_process_player_move(game_state.board, input.row, input.col, game_state.is_player_x_turn ? BOARD_PLAYER_X : BOARD_PLAYER_O);
+				enum BoardMoveResult last_move_result = board_process_player_move(game_state.board, input.row, input.col, game_state.is_player_x_turn ? BOARD_PLAYER_X : BOARD_PLAYER_O);
 
-				switch(game_state.last_move_result)
+				switch(last_move_result)
 				{
 					case BOARD_MOVE_RESULT_OK:
 					{
 						game_state.status_type = STATUS_TYPE_NONE;
 						game_state.status_message = NULL;
-						game_state.is_player_x_turn = !game_state.is_player_x_turn;
+						enum BoardPlayer last_player = game_state.is_player_x_turn ? BOARD_PLAYER_X : BOARD_PLAYER_O;						
+						++game_state.move_count;
+						enum BoardWinState win_state = board_check_win_state(game_state.board, last_player);
+
+						switch(win_state)
+						{
+							case BOARD_WIN_STATE_NONE:
+							{
+								game_state.is_player_x_turn = !game_state.is_player_x_turn;
+								break;
+							}
+							case BOARD_WIN_STATE_X:
+							{
+								end_game_with_message(STATUS_TYPE_INFO, "Player X wins! Congratulations!");
+								break;
+							}
+							case BOARD_WIN_STATE_O:
+							{
+								end_game_with_message(STATUS_TYPE_INFO, "Player O wins! Congratulations!");
+								break;
+							}
+							case BOARD_WIN_STATE_DRAW:
+							{
+								end_game_with_message(STATUS_TYPE_INFO, "It's a draw! Well played both!");
+								break;
+							}
+							case BOARD_WIN_STATE_INVALID_BOARD:
+							{
+								end_game_with_message(STATUS_TYPE_ERROR, "Internal error: invalid board state. Exiting.");
+								break;
+							}
+							default:
+							{
+								// Should never happen.
+								end_game_with_message(STATUS_TYPE_ERROR, "Internal error: Unknown board win state. Exiting.");
+								break;
+							}
+						}
+
 						break;
 					}
 					case BOARD_MOVE_RESULT_OUT_OF_BOUNDS:
@@ -71,17 +111,13 @@ int main(int argc, char *argv[]) {
 					}
 					case BOARD_MOVE_RESULT_INVALID_BOARD:
 					{
-						game_state.status_type = STATUS_TYPE_ERROR;
-						game_state.status_message = "Internal error: invalid board. Exiting.";
-						game_state.game_over = true;
+						end_game_with_message(STATUS_TYPE_ERROR, "Internal error: invalid board state. Exiting.");
 						break;
 					}
 					default:
 					{
 						// Should never happen.
-						game_state.status_type = STATUS_TYPE_ERROR;
-						game_state.status_message = "Internal error: Unknown board move result.";
-						game_state.game_over = true;
+						end_game_with_message(STATUS_TYPE_ERROR, "Internal error: Unknown board move result. Exiting.");
 						break;
 					}
 				}
@@ -90,8 +126,7 @@ int main(int argc, char *argv[]) {
 			}
 			case INPUT_RESULT_EOF:
 			{
-				render_status_message(STATUS_TYPE_INFO, "End of input detected. Exiting game.");
-				game_state.game_over = true;
+				end_game_with_message(STATUS_TYPE_INFO, "End of input detected. Exiting game.");
 				break;
 			}
 			case INPUT_RESULT_ERROR:
@@ -122,6 +157,14 @@ int main(int argc, char *argv[]) {
 
 	uninitialise_game();
 	return EXIT_SUCCESS;
+}
+
+static void end_game_with_message(enum StatusType type, const char* const message)
+{
+	render_clear_screen();
+	render_board(game_state.board);
+	render_status_message(type, message);
+	game_state.game_over = true;
 }
 
 static void initialise_game(void)
