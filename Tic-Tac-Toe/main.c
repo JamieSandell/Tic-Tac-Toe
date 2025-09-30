@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,31 +8,36 @@
 #include "input.h"
 #include "render_cli.h"
 
-static Board* game_board = NULL;
-static bool game_over = false;
-static bool is_player_x_turn = true;
+typedef struct GameState
+{
+	Board* board;
+	bool game_over;
+	enum BoardMoveResult last_move_result;
+	uint8_t move_count;
+	bool is_player_x_turn;
+	enum StatusType status_type;
+	const char* status_message;
+} GameState;
+
+static GameState game_state = { 0 };
 
 static void initialise_game(void);
 static void uninitialise_game(void);
 
 int main(int argc, char *argv[]) {
-	enum BoardMoveResult last_move_result = BOARD_MOVE_RESULT_OK;
-	enum StatusType status_type = STATUS_TYPE_NONE;
-	const char* status_message = NULL;
-
 	initialise_game();
 
-	while (!game_over)
+	while (!game_state.game_over)
 	{
 		render_clear_screen();
-		render_board(game_board);
+		render_board(game_state.board);
 
-		if (status_type != STATUS_TYPE_NONE && status_message != NULL)
+		if (game_state.status_type != STATUS_TYPE_NONE && game_state.status_message != NULL)
 		{
-			render_status_message(status_type, status_message);
+			render_status_message(game_state.status_type, game_state.status_message);
 		}
 
-		render_player_input_prompt(is_player_x_turn);
+		render_player_input_prompt(game_state.is_player_x_turn);
 
 		Input input;
 		enum InputResult input_result = get_player_input(&input);
@@ -40,42 +46,42 @@ int main(int argc, char *argv[]) {
 		{
 			case INPUT_RESULT_OK:
 			{
-				last_move_result = board_process_player_move(game_board, input.row, input.col, is_player_x_turn ? BOARD_PLAYER_X : BOARD_PLAYER_O);
+				game_state.last_move_result = board_process_player_move(game_state.board, input.row, input.col, game_state.is_player_x_turn ? BOARD_PLAYER_X : BOARD_PLAYER_O);
 
-				switch(last_move_result)
+				switch(game_state.last_move_result)
 				{
 					case BOARD_MOVE_RESULT_OK:
 					{
-						status_type = STATUS_TYPE_NONE;
-						status_message = NULL;
-						is_player_x_turn = !is_player_x_turn;
+						game_state.status_type = STATUS_TYPE_NONE;
+						game_state.status_message = NULL;
+						game_state.is_player_x_turn = !game_state.is_player_x_turn;
 						break;
 					}
 					case BOARD_MOVE_RESULT_OUT_OF_BOUNDS:
 					{
-						status_type = STATUS_TYPE_WARNING;
-						status_message = "Out of range (0-2). Try again.";
+						game_state.status_type = STATUS_TYPE_WARNING;
+						game_state.status_message = "Out of range (0-2). Try again.";
 						break;
 					}
 					case BOARD_MOVE_RESULT_CELL_OCCUPIED:
 					{
-						status_type = STATUS_TYPE_WARNING;
-						status_message = "That square is taken. Pick another.";
+						game_state.status_type = STATUS_TYPE_WARNING;
+						game_state.status_message = "That square is taken. Pick another.";
 						break;
 					}
 					case BOARD_MOVE_RESULT_INVALID_BOARD:
 					{
-						status_type = STATUS_TYPE_ERROR;
-						status_message = "Internal error: invalid board. Exiting.";
-						game_over = true;
+						game_state.status_type = STATUS_TYPE_ERROR;
+						game_state.status_message = "Internal error: invalid board. Exiting.";
+						game_state.game_over = true;
 						break;
 					}
 					default:
 					{
 						// Should never happen.
-						status_type = STATUS_TYPE_ERROR;
-						status_message = "Internal error: Unknown board move result.";
-						game_over = true;
+						game_state.status_type = STATUS_TYPE_ERROR;
+						game_state.status_message = "Internal error: Unknown board move result.";
+						game_state.game_over = true;
 						break;
 					}
 				}
@@ -85,7 +91,7 @@ int main(int argc, char *argv[]) {
 			case INPUT_RESULT_EOF:
 			{
 				render_status_message(STATUS_TYPE_INFO, "End of input detected. Exiting game.");
-				game_over = true;
+				game_state.game_over = true;
 				break;
 			}
 			case INPUT_RESULT_ERROR:
@@ -101,14 +107,14 @@ int main(int argc, char *argv[]) {
 			case INPUT_RESULT_NULL_POINTER:
 			{
 				render_status_message(STATUS_TYPE_ERROR, "Internal error: Null pointer passed to input function.");
-				game_over = true;
+				game_state.game_over = true;
 				break;
 			}
 			default:
 			{
 				// Should never happen.
 				render_status_message(STATUS_TYPE_ERROR, "Internal error: Unknown input result.");
-				game_over = true;
+				game_state.game_over = true;
 				break;
 			}
 		}
@@ -120,9 +126,15 @@ int main(int argc, char *argv[]) {
 
 static void initialise_game(void)
 {
-	game_board = board_create();
+	game_state.board = board_create();
+	game_state.game_over = false;
+	game_state.last_move_result = BOARD_MOVE_RESULT_OK;
+	game_state.move_count = 0;
+	game_state.is_player_x_turn = true;
+	game_state.status_type = STATUS_TYPE_NONE;
+	game_state.status_message = NULL;
 
-	if (!game_board)
+	if (!game_state.board)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -130,6 +142,6 @@ static void initialise_game(void)
 
 static void uninitialise_game(void)
 {
-	board_destroy(game_board);
-	game_board = NULL;
+	board_destroy(game_state.board);
+	game_state.board = NULL;
 }

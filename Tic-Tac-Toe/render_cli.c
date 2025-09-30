@@ -66,19 +66,24 @@ void render_clear_screen(void)
 	puts("\033[H\033[J");
 }
 
-void render_status_message(enum Status_Type type, const char* const message)
+void render_status_message(enum StatusType type, const char* const message)
 {
-	if (message)
+	if (message == NULL)
 	{
-		printf("Invalid input: %s\n", message);
+		return;
 	}
-	else
-	{
-		puts("Invalid input.");
-	}
+
+	const char* prefix =
+		type == STATUS_TYPE_INFO ? "Info: " :
+		type == STATUS_TYPE_WARNING ? "Warning: " :
+		type == STATUS_TYPE_ERROR ? "Error: " :
+		"";
+
+	printf("%s%s\n", prefix, message);
 }
 
 void render_player_input_prompt(bool is_player_x)
 {
-	printf("Player %c, enter your move (row and column between 0 an 2): ", is_player_x ? 'X' : 'O');
+	printf("Player %c, enter your move (row and column between 0 and 2): ", is_player_x ? 'X' : 'O');
+	fflush(stdout);
 }

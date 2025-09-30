@@ -28,5 +28,4 @@ enum BoardPlayer
 Board *board_create(void);
 void board_destroy(Board* board);
 enum BoardCellState board_get_cell(const Board* const board, const int row, const int col);
-// Processes a player's move. Returns true if the move was successful, false otherwise.
 enum BoardMoveResult board_process_player_move(Board* const board, int row, int col, enum BoardPlayer player);
