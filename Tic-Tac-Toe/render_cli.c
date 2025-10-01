@@ -36,7 +36,7 @@ static char render_board_cell(enum BoardCellState board_cell)
 	return ch;
 }
 
-void render_board(const Board* const board)
+void render_board(const Board *const board)
 {
 	if (!board)
 	{
@@ -66,14 +66,24 @@ void render_clear_screen(void)
 	puts("\033[H\033[J");
 }
 
-void render_status_message(enum StatusType type, const char* const message)
+void render_message(const char *const message)
 {
 	if (message == NULL)
 	{
 		return;
 	}
 
-	const char* prefix =
+	puts(message);
+}
+
+void render_status_message(enum StatusType type, const char *const message)
+{
+	if (message == NULL)
+	{
+		return;
+	}
+
+	const char *prefix =
 		type == STATUS_TYPE_INFO ? "Info: " :
 		type == STATUS_TYPE_WARNING ? "Warning: " :
 		type == STATUS_TYPE_ERROR ? "Error: " :

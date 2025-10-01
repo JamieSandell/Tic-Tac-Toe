@@ -6,7 +6,7 @@ struct Board
 	enum BoardCellState cells[3][3];
 };
 
-enum BoardWinState board_check_win_state(const Board* const board, enum BoardPlayer last_player)
+enum BoardWinState board_check_win_state(const Board *const board, enum BoardPlayer last_player)
 {
 	if (!board)
 	{
@@ -53,7 +53,7 @@ enum BoardWinState board_check_win_state(const Board* const board, enum BoardPla
 
 Board *board_create(void)
 {
-	Board *board = (Board *)malloc(sizeof(Board));
+	Board *board = malloc(sizeof(Board));
 
 	if (board)
 	{
@@ -68,12 +68,12 @@ Board *board_create(void)
 	return board;
 }
 
-void board_destroy(Board* board)
+void board_destroy(Board *board)
 {
 	free(board);
 }
 
-enum BoardCellState board_get_cell(const Board* const board, const int row, const int col)
+enum BoardCellState board_get_cell(const Board *const board, const int row, const int col)
 {
 	if (!board || row < 0 || row >= 3 || col < 0 || col >= 3)
 	{
@@ -83,7 +83,7 @@ enum BoardCellState board_get_cell(const Board* const board, const int row, cons
 	return board->cells[row][col];
 }
 
-enum BoardMoveResult board_process_player_move(Board* const board, int row, int col, enum BoardPlayer player)
+enum BoardMoveResult board_process_player_move(Board *const board, int row, int col, enum BoardPlayer player)
 {
 	if (!board)
 	{

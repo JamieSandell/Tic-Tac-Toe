@@ -34,8 +34,8 @@ enum BoardWinState
 	BOARD_WIN_STATE_INVALID_BOARD
 };
 
-enum BoardWinState board_check_win_state(const Board* const board, enum BoardPlayer last_player);
+enum BoardWinState board_check_win_state(const Board *const board, enum BoardPlayer last_player);
 Board *board_create(void);
-void board_destroy(Board* board);
-enum BoardCellState board_get_cell(const Board* const board, const int row, const int col);
-enum BoardMoveResult board_process_player_move(Board* const board, int row, int col, enum BoardPlayer player);
+void board_destroy(Board *board);
+enum BoardCellState board_get_cell(const Board *const board, const int row, const int col);
+enum BoardMoveResult board_process_player_move(Board *const board, int row, int col, enum BoardPlayer player);

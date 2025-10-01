@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 enum InputResult
 {
 	INPUT_RESULT_OK,
@@ -20,4 +22,6 @@ typedef struct Input
 // out_input must not be NULL.
 // Returns the input via the out_input parameter.
 // Returns INPUT_RESULT_OK on success, or an appropriate error code on failure.
-enum InputResult get_player_input(Input* const out_input);
+enum InputResult get_move_input(Input *const out_input);
+
+enum InputResult get_yes_no_input(bool *const out_is_yes);

@@ -10,22 +10,23 @@
 
 typedef struct GameState
 {
-	Board* board;
+	Board *board;
 	bool game_over;
 	enum BoardMoveResult last_move_result;
 	uint8_t move_count;
 	bool is_player_x_turn;
 	enum StatusType status_type;
-	const char* status_message;
+	const char *status_message;
 } GameState;
 
 static GameState game_state = { 0 };
 
-static void end_game_with_message(enum StatusType type, const char* const message);
+static void end_game_with_message(enum StatusType type, const char *const message);
 static void initialise_game(void);
 static void uninitialise_game(void);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 	initialise_game();
 
 	while (!game_state.game_over)
@@ -42,7 +43,7 @@ int main(int argc, char *argv[]) {
 		fflush(stdout);
 
 		Input input;
-		enum InputResult input_result = get_player_input(&input);
+		enum InputResult input_result = get_move_input(&input);
 
 		switch(input_result)
 		{
@@ -153,13 +154,17 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 		}
-	}	
+	}
+
+	render_message("Thank you for playing Tic-Tac-Toe!");
+	render_message("Would you like to play again? (y/n): ");
+	get_yes_no_input(NULL);
 
 	uninitialise_game();
 	return EXIT_SUCCESS;
 }
 
-static void end_game_with_message(enum StatusType type, const char* const message)
+static void end_game_with_message(enum StatusType type, const char *const message)
 {
 	render_clear_screen();
 	render_board(game_state.board);
