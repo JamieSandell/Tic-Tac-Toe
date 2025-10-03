@@ -2,24 +2,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "board.h"
 #include "common.h"
+#include "game.h"
 #include "input.h"
 #include "render_cli.h"
-
-typedef struct GameState
-{
-	Board *board;
-	bool game_over;
-	enum BoardMoveResult last_move_result;
-	uint8_t move_count;
-	bool is_player_x_turn;
-	enum StatusType status_type;
-	const char *status_message;
-} GameState;
-
-static GameState game_state = { 0 };
 
 static void end_game_with_message(enum StatusType type, const char *const message);
 static void initialise_game(void);
@@ -27,7 +14,7 @@ static void uninitialise_game(void);
 
 int main(int argc, char *argv[])
 {
-	initialise_game();
+	GameState* game_state = game_create();
 
 	while (!game_state.game_over)
 	{
