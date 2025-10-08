@@ -14,7 +14,7 @@ static void uninitialise_game(void);
 
 int main(int argc, char *argv[])
 {
-	GameState* game_state = game_create();
+	GameState* game_state = game_init();
 
 	while (!game_state.game_over)
 	{

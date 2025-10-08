@@ -55,16 +55,12 @@ Board *board_create(void)
 {
 	Board *board = malloc(sizeof(Board));
 
-	if (board)
+	if (!board)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				board->cells[i][j] = BOARD_CELL_EMPTY;
-			}
-		}
+		return NULL;
 	}
+
+	board = board_reset(board);
 	return board;
 }
 
@@ -110,4 +106,22 @@ enum BoardMoveResult board_process_player_move(Board *const board, int row, int 
 
 	board->cells[row][col] = player == BOARD_PLAYER_X ? BOARD_CELL_X : BOARD_CELL_O;
 	return BOARD_MOVE_RESULT_OK;
+}
+
+Board* board_reset(Board* const board)
+{
+	if (!board)
+	{
+		return NULL;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			board->cells[i][j] = BOARD_CELL_EMPTY;
+		}
+	}
+
+	return board;
 }

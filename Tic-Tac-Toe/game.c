@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-
 #include "board.h"
 #include "game.h"
 
@@ -16,102 +15,98 @@ struct GameState
 	const char *status_message;
 } GameState;
 
-GameState *game_create(void)
+bool game_init(GameState* game_state, Board* board)
 {
-	GameState *game = malloc(sizeof(GameState));
+	GameState *game_state = malloc(sizeof(GameState));
 
-	if (game == NULL)
+	if (game_state == NULL || board == NULL)
 	{
-		return NULL;
+		free(game_state);
+		free(board);
+		return false;
 	}
 
-	game->board = board_create();
-
-	if (game->board == NULL)
-	{
-		free(game);
-		return NULL;
-	}
-
-	game->game_over = false;
-	game->last_move_result = BOARD_MOVE_RESULT_OK;
-	game->move_count = 0;
-	game->is_player_x_turn = true;
-	game->status_type = STATUS_TYPE_NONE;
-	game->status_message = NULL;
-	return game;
+	board = board_reset(board);
+	game_state->board = board;
+	game_state->game_over = false;
+	game_state->last_move_result = BOARD_MOVE_RESULT_OK;
+	game_state->move_count = 0;
+	game_state->is_player_x_turn = true;
+	game_state->status_type = STATUS_TYPE_NONE;
+	game_state->status_message = NULL;
+	return true;
 }
 
-void game_destroy(GameState *game)
+void game_destroy(GameState *game_state)
 {
-	if (game == NULL)
+	if (game_state == NULL)
 	{
 		return;
 	}
 
-	if (game->board != NULL)
+	if (game_state->board != NULL)
 	{
-		board_destroy(game->board);
+		board_destroy(game_state->board);
 	}
 
-	free(game);
+	free(game_state);
 }
 
-Board *game_get_board(const GameState *const game)
+Board *game_get_board(const GameState *const game_state)
 {
-	if (game == NULL)
-	{
-		return NULL;
-	}
-
-	return game->board;
-}
-
-const char *game_get_status_message(const GameState *const game)
-{
-	if (game == NULL)
+	if (game_state == NULL)
 	{
 		return NULL;
 	}
-	return game->status_message;
+
+	return game_state->board;
 }
 
-uint8_t game_get_move_count(const GameState *const game)
+const char *game_get_status_message(const GameState *const game_state)
 {
-	if (game == NULL)
+	if (game_state == NULL)
+	{
+		return NULL;
+	}
+	return game_state->status_message;
+}
+
+uint8_t game_get_move_count(const GameState *const game_state)
+{
+	if (game_state == NULL)
 	{
 		return 0;
 	}
 
-	return game->move_count;
+	return game_state->move_count;
 }
 
-enum StatusType game_get_status_type(const GameState *const game)
+enum StatusType game_get_status_type(const GameState *const game_state)
 {
-	if (game == NULL)
+	if (game_state == NULL)
 	{
 		return STATUS_TYPE_ERROR;
 	}
 
-	return game->status_type;
+	return game_state->status_type;
 }
 
-bool game_is_over(const GameState *const game)
+bool game_is_over(const GameState *const game_state)
 {
-	if (game == NULL)
+	if (game_state == NULL)
 	{
 		return true;
 	}
 
-	return game->game_over;
+	return game_state->game_over;
 }
 
-bool game_is_player_x_turn(const GameState *const game)
+bool game_is_player_x_turn(const GameState *const game_state)
 {
-	if (game == NULL)
+	if (game_state == NULL)
 	{
 		return false;
 	}
 
-	return game->is_player_x_turn;
+	return game_state->is_player_x_turn;
 }

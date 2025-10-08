@@ -34,6 +34,9 @@ enum BoardWinState
 	BOARD_WIN_STATE_INVALID_BOARD
 };
 
+// API
+Board* board_reset(Board* const board);
+
 enum BoardWinState board_check_win_state(const Board *const board, enum BoardPlayer last_player);
 Board *board_create(void);
 void board_destroy(Board *board);
