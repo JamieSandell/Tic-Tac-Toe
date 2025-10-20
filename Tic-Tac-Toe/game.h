@@ -12,7 +12,7 @@ enum GameOutcome
 	GAME_OUTCOME_ERROR
 };
 
-typedef struct GameState GameState;
+typedef struct Game Game;
 
 typedef struct GameStepResult
 {
@@ -37,29 +37,9 @@ typedef struct GameStepResult
 
 // API
 
-/*
-	Preconditions
-	--------------------------------
-	g != NULL
-	board != NULL
-	board has already been initialised by the app (e.g., board_init called)
-
-	What game_init does
-	--------------------------------
-	Calls board_reset(board) to guarantee a clean start
-	Wires g->board = board
-	Clears game fields: game_over=false, move_count=0, is_player_x_turn=true
-	Clears status: status_type=STATUS_TYPE_NONE, status_code=GAME_STATUS_NONE
-
-	Return
-	--------------------------------
-	true on success
-	false if inputs invalid or board_reset fails
-	No I/O (no prints, no reads)
-*/
-bool game_init(GameState* game_state, Board* board);
-bool game_is_over(const GameState* const game_state);
-GameStepResult game_step(GameState* game_state, enum InputResult input_result, const Input* input)
+bool game_create(GameState *game_state);
+bool game_is_over(const GameState *const game_state);
+GameStepResult game_step(GameState *game_state, enum InputResult input_result, const Input *input);
 
 void game_destroy(GameState *game);
 Board *game_get_board(const GameState *const game);

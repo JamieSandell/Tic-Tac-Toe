@@ -126,7 +126,7 @@
     <ClCompile Include="board.c" />
     <ClCompile Include="game.c" />
     <ClCompile Include="input.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="cli_tic_tac_toe.c" />
     <ClCompile Include="render_cli.c" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +135,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="render_cli.h" />
+    <ClInclude Include="tic-tac-toe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

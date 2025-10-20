@@ -51,17 +51,17 @@ enum BoardWinState board_check_win_state(const Board *const board, enum BoardPla
 	return is_draw ? BOARD_WIN_STATE_DRAW : BOARD_WIN_STATE_NONE;
 }
 
-Board *board_create(void)
+bool *board_create(Board const *board)
 {
 	Board *board = malloc(sizeof(Board));
 
 	if (!board)
 	{
-		return NULL;
+		return false;
 	}
 
-	board = board_reset(board);
-	return board;
+	board_reset(board);
+	return true;
 }
 
 void board_destroy(Board *board)
@@ -69,7 +69,7 @@ void board_destroy(Board *board)
 	free(board);
 }
 
-enum BoardCellState board_get_cell(const Board *const board, const int row, const int col)
+enum BoardCellState board_get_cell(const Board *const board, int row, int col)
 {
 	if (!board || row < 0 || row >= 3 || col < 0 || col >= 3)
 	{
@@ -108,11 +108,11 @@ enum BoardMoveResult board_process_player_move(Board *const board, int row, int 
 	return BOARD_MOVE_RESULT_OK;
 }
 
-Board* board_reset(Board* const board)
+void board_reset(Board* const board)
 {
 	if (!board)
 	{
-		return NULL;
+		return;
 	}
 
 	for (int i = 0; i < 3; i++)
@@ -122,6 +122,4 @@ Board* board_reset(Board* const board)
 			board->cells[i][j] = BOARD_CELL_EMPTY;
 		}
 	}
-
-	return board;
 }

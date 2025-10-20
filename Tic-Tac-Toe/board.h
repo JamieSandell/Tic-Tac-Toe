@@ -35,7 +35,7 @@ enum BoardWinState
 };
 
 // API
-Board* board_reset(Board* const board);
+Board* board_reset(Board *const board);
 
 enum BoardWinState board_check_win_state(const Board *const board, enum BoardPlayer last_player);
 Board *board_create(void);

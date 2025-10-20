@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="cli_tic_tac_toe.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="board.c">
@@ -45,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tic-tac-toe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

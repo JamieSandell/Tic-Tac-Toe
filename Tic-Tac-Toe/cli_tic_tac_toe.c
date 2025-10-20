@@ -14,7 +14,11 @@ static void uninitialise_game(void);
 
 int main(int argc, char *argv[])
 {
-	GameState* game_state = game_init();
+	if (!game_init())
+	{
+		fprintf(stderr, "Failed to initialise game. Exiting.\n");
+		return EXIT_FAILURE;
+	}
 
 	while (!game_state.game_over)
 	{

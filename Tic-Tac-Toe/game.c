@@ -4,7 +4,7 @@
 #include "board.h"
 #include "game.h"
 
-struct GameState
+struct Game
 {
 	Board *board;
 	bool game_over;
@@ -13,27 +13,24 @@ struct GameState
 	bool is_player_x_turn;
 	enum StatusType status_type;
 	const char *status_message;
-} GameState;
+} Game;
 
-bool game_init(GameState* game_state, Board* board)
+bool game_create(Game *game)
 {
-	GameState *game_state = malloc(sizeof(GameState));
+	Game *game = malloc(sizeof(Game));
 
-	if (game_state == NULL || board == NULL)
+	if (game == NULL)
 	{
-		free(game_state);
-		free(board);
 		return false;
 	}
 
-	board = board_reset(board);
-	game_state->board = board;
-	game_state->game_over = false;
-	game_state->last_move_result = BOARD_MOVE_RESULT_OK;
-	game_state->move_count = 0;
-	game_state->is_player_x_turn = true;
-	game_state->status_type = STATUS_TYPE_NONE;
-	game_state->status_message = NULL;
+	game->board = board_create();
+	game->game_over = false;
+	game->last_move_result = BOARD_MOVE_RESULT_OK;
+	game->move_count = 0;
+	game->is_player_x_turn = true;
+	game->status_type = STATUS_TYPE_NONE;
+	game->status_message = NULL;
 	return true;
 }
 
