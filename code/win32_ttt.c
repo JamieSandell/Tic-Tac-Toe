@@ -8,5 +8,7 @@ WinMain (
     int show_command
 )
 {
+    WNDCLASSA window_class = {0};
+
     return 0;
 }
