@@ -1,7 +1,49 @@
+#include <stdbool.h>
 #include <windows.h>
 
+#define internal static
+#define local_persist static
+#define global_variable static
+
+global_variable bool running;
+
+internal void
+win32_resize_dib_section(int width, int height)
+{
+    BITMAPINFO bitmap_info = {0};
+    bitmap_info.bmiHeader.biSize = sizeof(bitmap_info.bmiHeader);
+
+    void *bitmap_memory;
+    HBITMAP bitmap_handle = CreateDIBSection
+    (
+        ,
+        ,
+        DIB_RGB_COLORS,
+        &bitmap_memory,
+        0,
+        0
+    );
+}
+
+internal void
+win32_update_window(HDC device_context, int x, int y, int width, int height)
+{
+    StretchDIBits
+    (
+        device_context,
+        x,
+        y,
+        width,
+        height,
+        ,
+        ,
+        DIB_RGB_COLORS,
+        SRCCOPY
+    );
+}
+
 LRESULT CALLBACK
-main_window_callback
+win_32_main_window_callback
 (
     HWND window,
     UINT message,
@@ -16,17 +58,21 @@ main_window_callback
 
         case WM_SIZE:
         {
-            OutputDebugStringA("WM_SIZE\n");
+            RECT client_rect;
+            GetClientRect(window, &client_rect);
+            int width = client_rect.right - client_rect.left;
+            int height = client_rect.bottom - client_rect.top;
+            win32_resize_dib_section(width, height);
             break;
         }
         case WM_DESTROY:
         {
-            OutputDebugStringA("WM_DESTROY\n");
+            running = false;
             break;
         }
         case WM_CLOSE:
         {
-            OutputDebugStringA("WM_CLOSE\n");
+            running = false;
             break;
         }
         case WM_ACTIVATEAPP:
@@ -42,20 +88,10 @@ main_window_callback
             HDC device_context = BeginPaint(window, &paint);
             int x = paint.rcPaint.left;
             int y = paint.rcPaint.top;
-            int width = paint.rcPaint.right - x;
-            int height = paint.rcPaint.bottom - y;
-            static DWORD operation = WHITENESS;
+            int width = paint.rcPaint.right - paint.rcPaint.left;
+            int height = paint.rcPaint.bottom - paint.rcPaint.top;
+            win32_update_window(device_context, x, y, width, height);
 
-            if (operation == WHITENESS)
-            {
-                operation = BLACKNESS;
-            }
-            else
-            {
-                operation = WHITENESS;
-            }
-
-            PatBlt(device_context, x, y, width, height, operation);
             EndPaint(window, &paint);
             break;
         }
@@ -80,7 +116,7 @@ WinMain
 {
     WNDCLASSA window_class = {0};
     window_class.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-    window_class.lpfnWndProc = main_window_callback;
+    window_class.lpfnWndProc = win_32_main_window_callback;
     window_class.hInstance = instance;
     window_class.lpszClassName = "TicTacToeWindowClass";
 
@@ -103,8 +139,10 @@ WinMain
         );
 
         if (window)
-        {            
-            for (;;)
+        {        
+            running = true;
+
+            while(running)
             {
                 MSG message;
                 BOOL message_result = GetMessageA(&message, 0, 0, 0);
